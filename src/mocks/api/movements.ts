@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { appendAuditLog, availableAt, BASE, findArticle, findLocation, recalcArticleTotals } from '../helper';
 import { db, saveToStorage } from '../data/db';
-import { InventoryMovement } from 'src/models/InventoryMovement';
+import type { InventoryMovement } from 'src/models/InventoryMovement';
 import { AuditAction } from 'src/models/AuditLog';
 
 const getMovements = http.get(`${BASE}/movements`, () => {

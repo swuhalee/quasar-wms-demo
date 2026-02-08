@@ -2,7 +2,8 @@
 import { http, HttpResponse } from 'msw';
 import { appendAuditLog, BASE, findArticle, recalcArticleTotals } from '../helper';
 import { db, saveToStorage } from '../data/db';
-import { ReturnCause, ReturnCauseLabel, ReturnOrder, ReturnStatusId, ReturnStatusLabel } from 'src/models/ReturnOrder';
+import type { ReturnCause, ReturnOrder } from 'src/models/ReturnOrder';
+import { ReturnCauseLabel, ReturnStatusId, ReturnStatusLabel } from 'src/models/ReturnOrder';
 import { OrderStatusId } from 'src/models/Order';
 import { AuditAction } from 'src/models/AuditLog';
 

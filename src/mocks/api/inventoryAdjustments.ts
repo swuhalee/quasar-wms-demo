@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { appendAuditLog, BASE, findArticle, findLocation, recalcArticleTotals } from '../helper';
 import { db, saveToStorage } from '../data/db';
-import { InventoryAdjustment } from 'src/models/InventoryAdjustment';
+import type { InventoryAdjustment } from 'src/models/InventoryAdjustment';
 import { AuditAction } from 'src/models/AuditLog';
 
 const getAdjustments = http.get(`${BASE}/inventoryAdjustments`, () => {

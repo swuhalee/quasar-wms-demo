@@ -1,10 +1,13 @@
-import { Article } from "src/models/Article";
-import { AuditAction, AuditLogEntry } from "src/models/AuditLog";
-import { ArticleItemLocation } from "src/models/InventoryLocation";
-import { Order, OrderStatusId } from "src/models/Order";
-import { ReturnCause, ReturnOrder, ReturnStatusId } from "src/models/ReturnOrder";
-import { Location, Warehouse, Zone } from "src/models/Warehouse";
-import { CustomWorkflow } from "src/models/Workflow";
+import type { Article } from "src/models/Article";
+import type { AuditLogEntry } from "src/models/AuditLog";
+import { AuditAction } from "src/models/AuditLog";
+import type { ArticleItemLocation } from "src/models/InventoryLocation";
+import type { Order } from "src/models/Order";
+import { OrderStatusId } from "src/models/Order";
+import type { ReturnOrder } from "src/models/ReturnOrder";
+import { ReturnCause, ReturnStatusId } from "src/models/ReturnOrder";
+import type { Location, Warehouse, Zone } from "src/models/Warehouse";
+import type { CustomWorkflow } from "src/models/Workflow";
 
 // Warehouses: 창고
 export function seedWarehouses(): Warehouse[] {

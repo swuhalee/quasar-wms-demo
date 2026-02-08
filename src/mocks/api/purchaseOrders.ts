@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { appendAuditLog, BASE, findArticle, findLocation, recalcArticleTotals } from '../helper';
 import { db, saveToStorage } from '../data/db';
-import { PurchaseOrder } from 'src/models/PurchaseOrder';
+import type { PurchaseOrder } from 'src/models/PurchaseOrder';
 import { AuditAction } from 'src/models/AuditLog';
 
 const getPurchaseOrders = http.get(`${BASE}/purchaseOrders`, () => {

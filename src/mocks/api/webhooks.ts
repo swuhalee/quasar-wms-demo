@@ -1,10 +1,12 @@
 import { http, HttpResponse } from 'msw';
 import { appendAuditLog, BASE, findArticle, findLocation, recalcArticleTotals } from '../helper';
 import { db, saveToStorage } from '../data/db';
-import { WebhookEvent, WebhookEventType } from 'src/models/Webhook';
+import type { WebhookEvent } from 'src/models/Webhook';
+import { WebhookEventType } from 'src/models/Webhook';
 import { OrderStatusId, OrderStatusLabel } from 'src/models/Order';
 import { AuditAction } from 'src/models/AuditLog';
-import { ReturnCause, ReturnOrder, ReturnStatusId, ReturnStatusLabel } from 'src/models/ReturnOrder';
+import type { ReturnOrder } from 'src/models/ReturnOrder';
+import { ReturnCause, ReturnStatusId, ReturnStatusLabel } from 'src/models/ReturnOrder';
 
 const getWebhookEvents = http.get(`${BASE}/webhooks`, () => {
     return HttpResponse.json(db.webhookEvents);
@@ -161,7 +163,7 @@ const simulateWebhook = http.post(`${BASE}/webhooks/simulate`, async ({ request 
             }
 
             default:
-                throw new Error(`Unknown event type: ${body.eventType}`);
+                throw new Error('Unknown event type');
         }
     } catch (err) {
         const msg = err instanceof Error ? err.message : 'Unknown error';

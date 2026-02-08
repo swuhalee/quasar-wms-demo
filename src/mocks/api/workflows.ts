@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { BASE } from '../helper';
 import { db, saveToStorage } from '../data/db';
-import { CustomWorkflow } from 'src/models/Workflow';
+import type { CustomWorkflow } from 'src/models/Workflow';
 
 const getWorkflows = http.get(`${BASE}/workflows`, () => {
     return HttpResponse.json(db.customWorkflows);

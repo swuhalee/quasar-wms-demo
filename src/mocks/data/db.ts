@@ -1,14 +1,14 @@
-import { Article } from "src/models/Article";
-import { AuditLogEntry } from "src/models/AuditLog";
-import { InventoryAdjustment } from "src/models/InventoryAdjustment";
-import { ArticleItemLocation } from "src/models/InventoryLocation";
-import { InventoryMovement } from "src/models/InventoryMovement";
-import { Order } from "src/models/Order";
-import { PurchaseOrder } from "src/models/PurchaseOrder";
-import { ReturnOrder } from "src/models/ReturnOrder";
-import { Location, Warehouse, Zone } from "src/models/Warehouse";
-import { WebhookEvent } from "src/models/Webhook";
-import { CustomWorkflow } from "src/models/Workflow";
+import type { Article } from "src/models/Article";
+import type { AuditLogEntry } from "src/models/AuditLog";
+import type { InventoryAdjustment } from "src/models/InventoryAdjustment";
+import type { ArticleItemLocation } from "src/models/InventoryLocation";
+import type { InventoryMovement } from "src/models/InventoryMovement";
+import type { Order } from "src/models/Order";
+import type { PurchaseOrder } from "src/models/PurchaseOrder";
+import type { ReturnOrder } from "src/models/ReturnOrder";
+import type { Location, Warehouse, Zone } from "src/models/Warehouse";
+import type { WebhookEvent } from "src/models/Webhook";
+import type { CustomWorkflow } from "src/models/Workflow";
 import { seedArticleItemLocations, seedArticles, seedAuditLog, seedCustomWorkflows, seedLocations, seedOrders, seedReturnOrders, seedWarehouses, seedZones } from "./seed";
 
 

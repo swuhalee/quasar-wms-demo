@@ -34,7 +34,7 @@ const getAbcAnalysis = http.get(`${BASE}/analytics/abcAnalysis`, () => {
         articleName: item.articleName,
         totalMovementQuantity: item.totalMovementQuantity,
         orderLineQuantity: item.orderLineQuantity,
-        category: (idx < total * 0.2 ? 'A' : idx < total * 0.5 ? 'B' : 'C') as 'A' | 'B' | 'C',
+        category: (idx < total * 0.2 ? 'A' : idx < total * 0.5 ? 'B' : 'C'),
     }));
 
     return HttpResponse.json(result);

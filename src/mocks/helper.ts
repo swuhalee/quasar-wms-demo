@@ -1,4 +1,4 @@
-import { AuditAction, AuditLogEntry } from "src/models/AuditLog";
+import type { AuditLogEntry, AuditAction } from "src/models/AuditLog";
 import { db } from "./data/db";
 
 export const BASE = '/api/v1';
