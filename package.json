@@ -32,6 +32,7 @@
     "vite-plugin-checker": "^0.11.0",
     "vue-eslint-parser": "^10.2.0",
     "@vue/eslint-config-prettier": "^10.1.0",
+    "msw": "^2.12.9",
     "prettier": "^3.3.3",
     "@types/node": "^20.5.9",
     "@quasar/app-vite": "^2.1.0",
