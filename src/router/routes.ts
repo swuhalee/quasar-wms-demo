@@ -4,7 +4,19 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    children: [
+      { path: '', name: 'dashboard', component: () => import('pages/DashboardPage.vue') },
+      { path: 'inventory', name: 'inventory', component: () => import('pages/InventoryPage.vue') },
+      { path: 'orders', name: 'orders', component: () => import('pages/OrderFlowPage.vue') },
+      { path: 'warehouse', name: 'warehouse', component: () => import('pages/WarehouseMapPage.vue') },
+      { path: 'movements', name: 'movements', component: () => import('pages/StockMovementPage.vue') },
+      { path: 'returns', name: 'returns', component: () => import('pages/ReturnsPage.vue') },
+      { path: 'automation', name: 'automation', component: () => import('pages/AutomationPage.vue') },
+      { path: 'analytics', name: 'analytics', component: () => import('pages/AnalyticsPage.vue') },
+      { path: 'scanner', name: 'scanner', component: () => import('pages/ScannerPage.vue') },
+      { path: 'audit', name: 'audit', component: () => import('pages/AuditLogPage.vue') },
+      { path: 'workflows', name: 'workflows', component: () => import('pages/WorkflowBuilderPage.vue') },
+    ],
   },
 
   // Always leave this as last one,
