@@ -14,22 +14,22 @@ export interface ZoneWithLocations {
 }
 
 export const useWarehouseStore = defineStore('warehouse', () => {
-    const { state: whState, refresh: refreshWarehouses } = useQuery({
+    const { state: whState, refresh: refreshWarehouses, isLoading: loadingWarehouses } = useQuery({
         key: ['warehouse', 'warehouses'],
         query: () => api.get<Warehouse[]>('/api/v1/warehouses').then(r => r.data),
     });
 
-    const { state: zoneState, refresh: refreshZones } = useQuery({
+    const { state: zoneState, refresh: refreshZones, isLoading: loadingZones } = useQuery({
         key: ['warehouse', 'zones'],
         query: () => api.get<ZoneWithLocations[]>('/api/v1/warehouses/zones').then(r => r.data),
     });
 
-    const { state: locState, refresh: refreshLocations } = useQuery({
+    const { state: locState, refresh: refreshLocations, isLoading: loadingLocations } = useQuery({
         key: ['warehouse', 'locations'],
         query: () => api.get<Location[]>('/api/v1/warehouses/locations').then(r => r.data),
     });
 
-    const { state: ailState, refresh: refreshAIL } = useQuery({
+    const { state: ailState, refresh: refreshAIL, isLoading: loadingArticleItemLocations } = useQuery({
         key: ['warehouse', 'articleItemLocations'],
         query: () => api.get<ArticleItemLocation[]>('/api/v1/articleItemLocations').then(r => r.data),
     });
@@ -39,10 +39,6 @@ export const useWarehouseStore = defineStore('warehouse', () => {
     const locations = computed(() => locState.value.data ?? []);
     const articleItemLocations = computed(() => ailState.value.data ?? []);
 
-    const loadingWarehouses = computed(() => whState.value.status === 'pending');
-    const loadingZones = computed(() => zoneState.value.status === 'pending');
-    const loadingLocations = computed(() => locState.value.status === 'pending');
-    const loadingArticleItemLocations = computed(() => ailState.value.status === 'pending');
     const loading = computed(() =>
         loadingWarehouses.value || loadingZones.value || loadingLocations.value || loadingArticleItemLocations.value,
     );

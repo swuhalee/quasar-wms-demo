@@ -4,14 +4,17 @@ import { computed } from "vue";
 import { api } from "src/boot/axios";
 import type { Article } from "src/models/Article";
 
+export const ARTICLE_KEYS = {
+    list: ['articles'] as const,
+};
+
 export const useArticleStore = defineStore('article', () => {
-    const { state, refresh } = useQuery({
-        key: ['articles'],
+    const { state, refresh, isLoading: loading } = useQuery({
+        key: ARTICLE_KEYS.list,
         query: () => api.get<Article[]>('/api/v1/articles').then(r => r.data),
     });
 
     const articles = computed(() => state.value.data ?? []);
-    const loading = computed(() => state.value.status === 'pending');
 
     return { articles, loading, fetchArticles: refresh };
 });

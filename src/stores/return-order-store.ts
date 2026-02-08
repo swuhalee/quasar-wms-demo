@@ -32,7 +32,7 @@ const RETURN_KEYS = {
 export const useReturnOrderStore = defineStore('returnOrder', () => {
     const queryCache = useQueryCache();
 
-    const { state, refresh: refreshReturnOrders } = useQuery({
+    const { state, refresh: refreshReturnOrders, isLoading: fetchLoading } = useQuery({
         key: RETURN_KEYS.list,
         query: () => api.get<ReturnOrder[]>('/api/v1/returnOrders').then(r => r.data),
     });
@@ -49,19 +49,19 @@ export const useReturnOrderStore = defineStore('returnOrder', () => {
         void queryCache.invalidateQueries({ key: RETURN_KEYS.causeSummary });
     };
 
-    const { mutateAsync: createReturnOrderAsync, state: createState } = useMutation({
+    const { mutateAsync: createReturnOrderAsync, isLoading: createLoading } = useMutation({
         mutation: (payload: CreateReturnOrderPayload) =>
             api.post<ReturnOrder>('/api/v1/returnOrders', payload).then(r => r.data),
         onSettled: invalidateAll,
     });
 
-    const { mutateAsync: inspectReturnOrderAsync, state: inspectState } = useMutation({
+    const { mutateAsync: inspectReturnOrderAsync, isLoading: inspectLoading } = useMutation({
         mutation: (returnOrderId: number) =>
             api.post<ReturnOrder>(`/api/v1/returnOrders/${returnOrderId}/inspect`).then(r => r.data),
         onSettled: invalidateAll,
     });
 
-    const { mutateAsync: processReturnOrderAsync, state: processState } = useMutation({
+    const { mutateAsync: processReturnOrderAsync, isLoading: processLoading } = useMutation({
         mutation: ({ returnOrderId, payload }: { returnOrderId: number; payload: ProcessReturnPayload }) =>
             api.post<ReturnOrder>(`/api/v1/returnOrders/${returnOrderId}/process`, payload).then(r => r.data),
         onSettled: invalidateAll,
@@ -69,10 +69,6 @@ export const useReturnOrderStore = defineStore('returnOrder', () => {
 
     const returnOrders = computed(() => state.value.data ?? []);
     const causeSummary = computed(() => causeState.value.data ?? []);
-    const fetchLoading = computed(() => state.value.status === 'pending');
-    const createLoading = computed(() => createState.value.status === 'pending');
-    const inspectLoading = computed(() => inspectState.value.status === 'pending');
-    const processLoading = computed(() => processState.value.status === 'pending');
     const loading = computed(() =>
         fetchLoading.value || createLoading.value || inspectLoading.value || processLoading.value,
     );

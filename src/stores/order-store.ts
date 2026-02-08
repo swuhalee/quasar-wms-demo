@@ -21,12 +21,12 @@ const ORDER_KEYS = {
 export const useOrderStore = defineStore('order', () => {
     const queryCache = useQueryCache();
 
-    const { state, refresh } = useQuery({
+    const { state, refresh, isLoading: fetchLoading } = useQuery({
         key: ORDER_KEYS.list,
         query: () => api.get<Order[]>('/api/v1/orders').then(r => r.data),
     });
 
-    const { mutateAsync: createOrderAsync, state: createState } = useMutation({
+    const { mutateAsync: createOrderAsync, isLoading: createLoading } = useMutation({
         mutation: (payload: CreateOrderPayload) =>
             api.put<Order>('/api/v1/orders', payload).then(r => r.data),
         onSettled: () => {
@@ -34,7 +34,7 @@ export const useOrderStore = defineStore('order', () => {
         },
     });
 
-    const { mutateAsync: processOrderAsync, state: processState } = useMutation({
+    const { mutateAsync: processOrderAsync, isLoading: processLoading } = useMutation({
         mutation: (orderId: number) =>
             api.post<Order>(`/api/v1/orders/${orderId}/process`).then(r => r.data),
         onSettled: () => {
@@ -43,9 +43,6 @@ export const useOrderStore = defineStore('order', () => {
     });
 
     const orders = computed(() => state.value.data ?? []);
-    const fetchLoading = computed(() => state.value.status === 'pending');
-    const createLoading = computed(() => createState.value.status === 'pending');
-    const processLoading = computed(() => processState.value.status === 'pending');
 
     return {
         orders,

@@ -27,17 +27,17 @@ const MOVEMENT_KEYS = {
 export const useMovementStore = defineStore('movement', () => {
     const queryCache = useQueryCache();
 
-    const { state: movState, refresh: refreshMovements } = useQuery({
+    const { state: movState, refresh: refreshMovements, isLoading: movementsLoading } = useQuery({
         key: MOVEMENT_KEYS.movements,
         query: () => api.get<InventoryMovement[]>('/api/v1/movements').then(r => r.data),
     });
 
-    const { state: adjState, refresh: refreshAdjustments } = useQuery({
+    const { state: adjState, refresh: refreshAdjustments, isLoading: adjustmentsLoading } = useQuery({
         key: MOVEMENT_KEYS.adjustments,
         query: () => api.get<InventoryAdjustment[]>('/api/v1/inventoryAdjustments').then(r => r.data),
     });
 
-    const { mutateAsync: createMovementAsync, state: createMovState } = useMutation({
+    const { mutateAsync: createMovementAsync, isLoading: createMovementLoading } = useMutation({
         mutation: (payload: CreateMovementPayload) =>
             api.post<InventoryMovement>('/api/v1/movements', payload).then(r => r.data),
         onSettled: () => {
@@ -45,7 +45,7 @@ export const useMovementStore = defineStore('movement', () => {
         },
     });
 
-    const { mutateAsync: createAdjustmentAsync, state: createAdjState } = useMutation({
+    const { mutateAsync: createAdjustmentAsync, isLoading: createAdjustmentLoading } = useMutation({
         mutation: (payload: CreateAdjustmentPayload) =>
             api.post<InventoryAdjustment>('/api/v1/inventoryAdjustments', payload).then(r => r.data),
         onSettled: () => {
@@ -55,10 +55,6 @@ export const useMovementStore = defineStore('movement', () => {
 
     const movements = computed(() => movState.value.data ?? []);
     const adjustments = computed(() => adjState.value.data ?? []);
-    const movementsLoading = computed(() => movState.value.status === 'pending');
-    const adjustmentsLoading = computed(() => adjState.value.status === 'pending');
-    const createMovementLoading = computed(() => createMovState.value.status === 'pending');
-    const createAdjustmentLoading = computed(() => createAdjState.value.status === 'pending');
     const loading = computed(() => movementsLoading.value || adjustmentsLoading.value);
 
     async function fetchAll() {
