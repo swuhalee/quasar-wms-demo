@@ -13,7 +13,7 @@
 
         <!-- q-item: 리스트 아이템 -->
         <!-- v-ripple: 클릭했을 때 물결이 퍼지는 듯한 리플 효과임 -->
-        <q-item v-for="nav in navlist" :key="nav.to" v-ripple clickable :to="nav.to"
+        <q-item v-for="nav in navlist" :key="nav.to" v-ripple clickable :to="nav.to" exact
           active-class="text-primary bg-blue-1">
           <!-- q-item-section: 아이템 내부의 구역 -->
           <q-item-section avatar>
