@@ -122,15 +122,15 @@ export function seedArticleItemLocations(): ArticleItemLocation[] {
         // SKU-1002: 500 total → 350 bulk, 150 pick
         { articleNumber: 'SKU-1002', locationId: 4, quantity: 350, allocatedQuantity: 0 },
         { articleNumber: 'SKU-1002', locationId: 8, quantity: 150, allocatedQuantity: 20 },
-        // SKU-1003: 30 total → 22 bulk, 8 pick
+        // SKU-1003: 30 total → 22 bulk, 8 pick (3 allocated for ORD-20240103)
         { articleNumber: 'SKU-1003', locationId: 5, quantity: 22, allocatedQuantity: 0 },
-        { articleNumber: 'SKU-1003', locationId: 9, quantity: 8, allocatedQuantity: 0 },
+        { articleNumber: 'SKU-1003', locationId: 9, quantity: 8, allocatedQuantity: 3 },
         // SKU-1004: 75 total → 50 bulk, 25 pick
         { articleNumber: 'SKU-1004', locationId: 5, quantity: 50, allocatedQuantity: 0 },
         { articleNumber: 'SKU-1004', locationId: 10, quantity: 25, allocatedQuantity: 15 },
-        // SKU-1005: 15 total → 10 bulk, 5 pick
+        // SKU-1005: 15 total → 10 bulk, 5 pick (1 allocated for ORD-20240103)
         { articleNumber: 'SKU-1005', locationId: 6, quantity: 10, allocatedQuantity: 0 },
-        { articleNumber: 'SKU-1005', locationId: 11, quantity: 5, allocatedQuantity: 0 },
+        { articleNumber: 'SKU-1005', locationId: 11, quantity: 5, allocatedQuantity: 1 },
         // SKU-1006: 200 total → 120 bulk, 80 pick
         { articleNumber: 'SKU-1006', locationId: 6, quantity: 120, allocatedQuantity: 0 },
         { articleNumber: 'SKU-1006', locationId: 12, quantity: 80, allocatedQuantity: 5 },
@@ -178,6 +178,28 @@ export function seedOrders(): Order[] {
                 },
             ],
             orderRemark: 'Bulk order',
+            createdDate: today,
+        },
+        {
+            orderId: 3,
+            orderNumber: 'ORD-20240103',
+            goodsOwnerId: 1,
+            orderStatus: { statusId: OrderStatusId.Created, statusText: 'Created' },
+            orderLines: [
+                {
+                    rowNumber: 1,
+                    articleNumber: 'SKU-1003',
+                    orderedNumberOfItems: 3,
+                    pickedNumberOfItems: 0,
+                },
+                {
+                    rowNumber: 2,
+                    articleNumber: 'SKU-1005',
+                    orderedNumberOfItems: 1,
+                    pickedNumberOfItems: 0,
+                },
+            ],
+            orderRemark: 'Standard delivery',
             createdDate: today,
         },
     ];

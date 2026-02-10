@@ -1,1 +1,22 @@
 // app global css in SCSS form
+
+// 모바일 PDA 대응
+@media (max-width: 599px) {
+    .pda-large-input .q-field__native {
+        font-size: 1.5rem;
+        min-height: 56px;
+    }
+
+    .pda-large-text {
+        font-size: 1.25rem;
+    }
+
+    .pda-touch-target {
+        min-height: 48px;
+        min-width: 48px;
+    }
+}
+
+.pda-touch-target {
+    min-height: 44px;
+}
