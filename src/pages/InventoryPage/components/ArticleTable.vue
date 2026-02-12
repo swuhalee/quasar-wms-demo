@@ -59,7 +59,7 @@ function rowClass(row: { inventoryInfo: { sellableNumberOfItems: number } }) {
             <q-td :props="props">
                 <q-btn flat dense round icon="history" color="blue-grey"
                     :to="{ name: 'audit', query: { article: props.row.articleNumber } }">
-                    <q-tooltip>SKU 이력 보기 (감사 로그)</q-tooltip>
+                    <q-tooltip>SKU 이력 보기</q-tooltip>
                 </q-btn>
             </q-td>
         </template>

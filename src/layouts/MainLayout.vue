@@ -47,7 +47,7 @@ const navlist = [
   { title: '자동화', caption: '웹훅 및 트리거', icon: 'smart_toy', to: '/automation' },
   { title: '분석', caption: '보고서 및 차트', icon: 'analytics', to: '/analytics' },
   { title: '스캐너', caption: '바코드 / PDA', icon: 'qr_code_scanner', to: '/scanner' },
-  { title: '감사 로그', caption: 'SKU 이력', icon: 'history', to: '/audit' },
+  { title: '작업 이력', caption: 'SKU 이력', icon: 'history', to: '/audit' },
   { title: '워크플로우', caption: '커스텀 상태', icon: 'account_tree', to: '/workflows' },
 ];
 

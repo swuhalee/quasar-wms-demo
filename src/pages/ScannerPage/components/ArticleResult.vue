@@ -56,7 +56,7 @@ const locationColumns: QTableColumn[] = [
                 hide-pagination :rows-per-page-options="[0]" />
         </q-card-section>
         <q-card-actions>
-            <q-btn flat color="primary" icon="history" label="감사 로그 보기"
+            <q-btn flat color="primary" icon="history" label="작업 이력 보기"
                 :to="`/audit?article=${result.data.articleNumber}`" />
             <q-btn flat color="teal" icon="swap_horiz" label="이동 등록" to="/movements" />
         </q-card-actions>

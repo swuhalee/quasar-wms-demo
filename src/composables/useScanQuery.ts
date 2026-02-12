@@ -9,6 +9,7 @@ export const SCAN_KEYS = {
     barcode: (barcode: string) => ['scan', barcode] as const,
 };
 
+/** 바코드 스캔 결과 조회 */
 export function useScanBarcode(getBarcode: () => string) {
     const query = useQuery({
         key: () => [...SCAN_KEYS.barcode(getBarcode())],
