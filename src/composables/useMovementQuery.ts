@@ -37,7 +37,7 @@ export function useCreateMovement() {
 
     const { mutateAsync, isLoading } = useMutation({
         mutation: (payload: CreateMovementPayload) => movementApi.createMovement(payload),
-        onSettled: () => {
+        onSuccess: () => {
             void queryCache.invalidateQueries({ key: MOVEMENT_KEYS.movements });
         },
     });
@@ -51,7 +51,7 @@ export function useCreateAdjustment() {
 
     const { mutateAsync, isLoading } = useMutation({
         mutation: (payload: CreateAdjustmentPayload) => movementApi.createAdjustment(payload),
-        onSettled: () => {
+        onSuccess: () => {
             void queryCache.invalidateQueries({ key: MOVEMENT_KEYS.adjustments });
         },
     });

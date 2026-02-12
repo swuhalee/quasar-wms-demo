@@ -25,7 +25,7 @@ export function useCreatePurchaseOrder() {
 
     const { mutateAsync, isLoading } = useMutation({
         mutation: (payload: CreatePurchaseOrderPayload) => purchaseOrderApi.createPurchaseOrder(payload),
-        onSettled: () => {
+        onSuccess: () => {
             void queryCache.invalidateQueries({ key: ARTICLE_KEYS.list });
             void queryCache.invalidateQueries({ key: PURCHASE_ORDER_KEYS.list });
         },

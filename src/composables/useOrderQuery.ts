@@ -47,7 +47,7 @@ export function useCreateOrder() {
 
     const { mutateAsync, isLoading } = useMutation({
         mutation: (payload: CreateOrderPayload) => orderApi.createOrder(payload),
-        onSettled: () => {
+        onSuccess: () => {
             void queryCache.invalidateQueries({ key: ORDER_KEYS.list });
         },
     });
@@ -61,7 +61,7 @@ export function useProcessOrder() {
 
     const { mutateAsync, isLoading } = useMutation({
         mutation: (orderId: number) => orderApi.processOrder(orderId),
-        onSettled: () => {
+        onSuccess: () => {
             void queryCache.invalidateQueries({ key: ORDER_KEYS.list });
             void queryCache.invalidateQueries({ key: ARTICLE_KEYS.list });
         },

@@ -41,7 +41,7 @@ export function useCreateReturnOrder() {
 
     const { mutateAsync, isLoading } = useMutation({
         mutation: (payload: CreateReturnOrderPayload) => returnOrderApi.createReturnOrder(payload),
-        onSettled: () => {
+        onSuccess: () => {
             void queryCache.invalidateQueries({ key: RETURN_ORDER_KEYS.list });
             void queryCache.invalidateQueries({ key: RETURN_ORDER_KEYS.causeSummary });
         },
@@ -56,7 +56,7 @@ export function useInspectReturnOrder() {
 
     const { mutateAsync, isLoading } = useMutation({
         mutation: (returnOrderId: number) => returnOrderApi.inspectReturnOrder(returnOrderId),
-        onSettled: () => {
+        onSuccess: () => {
             void queryCache.invalidateQueries({ key: RETURN_ORDER_KEYS.list });
             void queryCache.invalidateQueries({ key: RETURN_ORDER_KEYS.causeSummary });
         },
@@ -72,7 +72,7 @@ export function useProcessReturnOrder() {
     const { mutateAsync, isLoading } = useMutation({
         mutation: ({ returnOrderId, payload }: { returnOrderId: number; payload: ProcessReturnPayload }) =>
             returnOrderApi.processReturnOrder(returnOrderId, payload),
-        onSettled: () => {
+        onSuccess: () => {
             void queryCache.invalidateQueries({ key: RETURN_ORDER_KEYS.list });
             void queryCache.invalidateQueries({ key: RETURN_ORDER_KEYS.causeSummary });
         },
