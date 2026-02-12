@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'analytics', name: 'analytics', component: () => import('pages/AnalyticsPage.vue') },
       { path: 'scanner', name: 'scanner', component: () => import('pages/ScannerPage/ScannerPage.vue') },
       { path: 'audit', name: 'audit', component: () => import('pages/AuditLogPage/AuditLogPage.vue') },
-      { path: 'workflows', name: 'workflows', component: () => import('pages/WorkflowBuilderPage.vue') },
+      { path: 'workflows', name: 'workflows', component: () => import('pages/WorkflowBuilderPage/WorkflowBuilderPage.vue') },
     ],
   },
 
