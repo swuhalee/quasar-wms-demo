@@ -25,3 +25,9 @@ export interface LowStockAlert {
     reorderPoint: number;
     deficit: number;
 }
+
+export interface InventoryTrends {
+    dates: string[];
+    totalInventory: number[];
+    sellableInventory: number[];
+}
