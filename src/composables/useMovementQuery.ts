@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryCache } from '@pinia/colada';
 import { computed } from 'vue';
 import { movementApi, type CreateMovementPayload, type CreateAdjustmentPayload } from 'src/api/movementApi';
+import { ARTICLE_KEYS } from './useArticleQuery';
+import { WAREHOUSE_KEYS } from './useWarehouseQuery';
 
 export const MOVEMENT_KEYS = {
     movements: ['movements'] as const,
@@ -39,6 +41,8 @@ export function useCreateMovement() {
         mutation: (payload: CreateMovementPayload) => movementApi.createMovement(payload),
         onSuccess: () => {
             void queryCache.invalidateQueries({ key: MOVEMENT_KEYS.movements });
+            void queryCache.invalidateQueries({ key: ARTICLE_KEYS.list });
+            void queryCache.invalidateQueries({ key: WAREHOUSE_KEYS.articleItemLocations });
         },
     });
 
@@ -53,6 +57,8 @@ export function useCreateAdjustment() {
         mutation: (payload: CreateAdjustmentPayload) => movementApi.createAdjustment(payload),
         onSuccess: () => {
             void queryCache.invalidateQueries({ key: MOVEMENT_KEYS.adjustments });
+            void queryCache.invalidateQueries({ key: ARTICLE_KEYS.list });
+            void queryCache.invalidateQueries({ key: WAREHOUSE_KEYS.articleItemLocations });
         },
     });
 
