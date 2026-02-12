@@ -26,5 +26,5 @@ export interface AuditLogEntry {
     | 'webhook';
     referenceId: number;
     description: string;
-    details: Record<string, unknown>;
+    details: Record<string, string | number | null>;
 }

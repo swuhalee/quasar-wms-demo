@@ -14,7 +14,7 @@ const getWebhookEvents = http.get(`${BASE}/webhooks`, () => {
 
 interface SimulateWebhookBody {
     eventType: WebhookEventType;
-    payload: Record<string, unknown>;
+    payload: Record<string, string | number | null>;
 }
 
 const simulateWebhook = http.post(`${BASE}/webhooks/simulate`, async ({ request }) => {

@@ -15,7 +15,7 @@ export const WebhookEventTypeLabel: Record<WebhookEventType, string> = {
 export interface WebhookEvent {
     eventId: number;
     eventType: WebhookEventType;
-    payload: Record<string, unknown>;
+    payload: Record<string, string | number | null>;
     receivedDate: string;
     processed: boolean;
     resultMessage: string;

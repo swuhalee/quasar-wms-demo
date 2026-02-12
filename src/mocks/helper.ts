@@ -39,7 +39,7 @@ export function appendAuditLog(
     referenceType: AuditLogEntry['referenceType'],
     referenceId: number,
     description: string,
-    details: Record<string, unknown> = {},
+    details: Record<string, string | number | null> = {},
 ): void {
     const entry: AuditLogEntry = {
         auditId: db.nextAuditId++,
