@@ -5,6 +5,7 @@ import {
     type CreateReturnOrderPayload,
     type ProcessReturnPayload,
 } from 'src/api/returnOrderApi';
+import { ARTICLE_KEYS } from './useArticleQuery';
 
 export const RETURN_ORDER_KEYS = {
     list: ['returnOrders'] as const,
@@ -75,6 +76,7 @@ export function useProcessReturnOrder() {
         onSuccess: () => {
             void queryCache.invalidateQueries({ key: RETURN_ORDER_KEYS.list });
             void queryCache.invalidateQueries({ key: RETURN_ORDER_KEYS.causeSummary });
+            void queryCache.invalidateQueries({ key: ARTICLE_KEYS.list });
         },
     });
 
