@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { usePerformance, useLowStockAlerts } from 'src/composables/useAnalyticsQuery';
+import type { LowStockAlert, WarehousePerformance } from 'src/models/Analytics';
 
-const { performances } = usePerformance();
-const { alerts } = useLowStockAlerts();
+defineProps<{
+    performances: WarehousePerformance;
+    alerts: LowStockAlert[];
+}>();
 </script>
 
 <template>

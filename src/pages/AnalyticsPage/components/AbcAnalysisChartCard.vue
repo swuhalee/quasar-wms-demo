@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useAbcAnalysis } from 'src/composables/useAnalyticsQuery';
+import type { AbcAnalysisItem } from 'src/models/Analytics';
 
-const { analysis } = useAbcAnalysis();
+const { analysis } = defineProps<{
+    analysis: AbcAnalysisItem[];
+}>();
 
 const chartOptions = computed(() => ({
     chart: { toolbar: { show: false } },
-    xaxis: { categories: analysis.value.map((a) => a.articleNumber) },
-    colors: analysis.value.map((a) =>
+    xaxis: { categories: analysis.map((a) => a.articleNumber) },
+    colors: analysis.map((a) =>
         a.category === 'A' ? '#21ba45' : a.category === 'B' ? '#f2c037' : '#c10015',
     ),
     plotOptions: { bar: { distributed: true, borderRadius: 4 } },
@@ -15,7 +17,7 @@ const chartOptions = computed(() => ({
 }));
 
 const chartSeries = computed(() => [
-    { name: '주문 수량', data: analysis.value.map((a) => a.orderLineQuantity) },
+    { name: '주문 수량', data: analysis.map((a) => a.orderLineQuantity) },
 ]);
 </script>
 

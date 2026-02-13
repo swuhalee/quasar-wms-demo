@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { QTableColumn } from 'quasar';
-import { useAbcAnalysis } from 'src/composables/useAnalyticsQuery';
-import type { AbcCategory } from 'src/models/Analytics';
+import type { AbcAnalysisItem, AbcCategory } from 'src/models/Analytics';
 
-const { analysis } = useAbcAnalysis();
+const { analysis } = defineProps<{
+    analysis: AbcAnalysisItem[];
+}>();
 
 function categoryColor(cat: AbcCategory) {
     return cat === 'A' ? 'positive' : cat === 'B' ? 'warning' : 'negative';

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { QTableColumn } from 'quasar';
-import { useLowStockAlerts } from 'src/composables/useAnalyticsQuery';
+import type { LowStockAlert } from 'src/models/Analytics';
 
-const { alerts } = useLowStockAlerts();
+const { alerts } = defineProps<{
+    alerts: LowStockAlert[];
+}>();
 
 const columns: QTableColumn[] = [
     { name: 'articleNumber', label: 'SKU', field: 'articleNumber', align: 'left' },

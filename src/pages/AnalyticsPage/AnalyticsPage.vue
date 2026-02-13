@@ -8,10 +8,10 @@ import OrderStatusPieCard from './components/OrderStatusPieCard.vue';
 import LowStockAlertCard from './components/LowStockAlertCard.vue';
 import AbcAnalysisTableCard from './components/AbcAnalysisTableCard.vue';
 
-const { isLoading: perfLoading } = usePerformance();
-const { isLoading: trendsLoading } = useInventoryTrends();
-const { isLoading: abcLoading } = useAbcAnalysis();
-const { isLoading: alertsLoading } = useLowStockAlerts();
+const { performances, isLoading: perfLoading } = usePerformance();
+const { trends, isLoading: trendsLoading } = useInventoryTrends();
+const { analysis, isLoading: abcLoading } = useAbcAnalysis();
+const { alerts, isLoading: alertsLoading } = useLowStockAlerts();
 
 const loading = computed(() => perfLoading.value || trendsLoading.value || abcLoading.value || alertsLoading.value);
 </script>
@@ -25,14 +25,14 @@ const loading = computed(() => perfLoading.value || trendsLoading.value || abcLo
         </div>
 
         <template v-else>
-            <KpiCardsRow />
+            <KpiCardsRow :performances="performances" :alerts="alerts" />
 
             <div class="row q-col-gutter-md q-mb-lg">
                 <div class="col-12 col-md-6">
-                    <InventoryTrendCard />
+                    <InventoryTrendCard :trends="trends" />
                 </div>
                 <div class="col-12 col-md-6">
-                    <AbcAnalysisChartCard />
+                    <AbcAnalysisChartCard :analysis="analysis" />
                 </div>
             </div>
 
@@ -41,11 +41,11 @@ const loading = computed(() => perfLoading.value || trendsLoading.value || abcLo
                     <OrderStatusPieCard />
                 </div>
                 <div class="col-12 col-md-8">
-                    <LowStockAlertCard />
+                    <LowStockAlertCard :alerts="alerts" />
                 </div>
             </div>
 
-            <AbcAnalysisTableCard />
+            <AbcAnalysisTableCard :analysis="analysis" />
         </template>
     </q-page>
 </template>
