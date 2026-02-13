@@ -11,6 +11,8 @@ import LowStockAlerts from './components/LowStockAlerts.vue';
 import RecentOrders from './components/RecentOrders.vue';
 import { useQuasar } from 'quasar';
 import { api } from 'src/boot/axios';
+import { LOW_STOCK_THRESHOLD } from 'src/constants/inventory';
+import { notifyError } from 'src/utils/notify';
 
 const $q = useQuasar();
 const { articles, refresh: refreshArticles } = useArticles();
@@ -23,22 +25,22 @@ const { movements } = useMovements();
 const { returnOrders, refresh: refreshReturnOrders } = useReturnOrders();
 const { refresh: refreshCauseSummary } = useReturnCauseSummary();
 
-const today = () => new Date().toISOString().slice(0, 10);
+const today = new Date().toISOString().slice(0, 10);
 
 const kpiCards = computed(() => [
     { label: '총 품목 수', value: articles.value.length, color: 'bg-primary' },
     { label: '총 재고', value: articles.value.reduce((s, a) => s + a.inventoryInfo.numberOfItems, 0), color: 'bg-teal' },
     { label: '판매 가능 수량', value: articles.value.reduce((s, a) => s + a.inventoryInfo.sellableNumberOfItems, 0), color: 'bg-positive' },
-    { label: '오늘 주문', value: orders.value.filter((o) => o.createdDate.slice(0, 10) === today()).length, color: 'bg-orange' },
+    { label: '오늘 주문', value: orders.value.filter((o) => o.createdDate.slice(0, 10) === today).length, color: 'bg-orange' },
     { label: '구역 수', value: zones.value.length, color: 'bg-deep-purple' },
     { label: '로케이션(칸)', value: locations.value.length, color: 'bg-indigo' },
     { label: '총 할당', value: articleItemLocations.value.reduce((s, ail) => s + ail.allocatedQuantity, 0), color: 'bg-cyan' },
-    { label: '오늘 이동', value: movements.value.filter((m) => m.movedDate.slice(0, 10) === today()).length, color: 'bg-blue-grey' },
-    { label: '오늘 반품', value: returnOrders.value.filter((r) => r.createdDate.slice(0, 10) === today()).length, color: 'bg-purple' },
+    { label: '오늘 이동', value: movements.value.filter((m) => m.movedDate.slice(0, 10) === today).length, color: 'bg-blue-grey' },
+    { label: '오늘 반품', value: returnOrders.value.filter((r) => r.createdDate.slice(0, 10) === today).length, color: 'bg-purple' },
 ]);
 
 const lowStockArticles = computed(() =>
-    articles.value.filter((a) => a.inventoryInfo.sellableNumberOfItems < 10),
+    articles.value.filter((a) => a.inventoryInfo.sellableNumberOfItems < LOW_STOCK_THRESHOLD),
 );
 
 const recentOrders = orders;
@@ -60,11 +62,14 @@ function confirmReset() {
         cancel: true,
         persistent: true,
     }).onOk(() => {
-        void api.post('/api/v1/reset').then(() =>
-            loadAll().then(() => {
+        void api.post('/api/v1/reset')
+            .then(() => loadAll())
+            .then(() => {
                 $q.notify({ type: 'positive', message: '데이터가 시드 상태로 초기화되었습니다.' });
-            }),
-        );
+            })
+            .catch((err) => {
+                notifyError(err, '초기화에 실패했습니다.');
+            });
     });
 }
 </script>
@@ -78,7 +83,7 @@ function confirmReset() {
 
         <KPICards :cards="kpiCards" />
         <QuickActions />
-        <LowStockAlerts :artices="lowStockArticles" />
+        <LowStockAlerts :articles="lowStockArticles" />
         <RecentOrders :orders="recentOrders" />
     </q-page>
 </template>

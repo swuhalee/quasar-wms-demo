@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type QTableColumn } from 'quasar';
+import { LOW_STOCK_THRESHOLD } from 'src/constants/inventory';
 import type { Article } from 'src/models/Article';
 import { ref } from 'vue';
 
@@ -41,7 +42,7 @@ const columns: QTableColumn[] = [
 ];
 
 function rowClass(row: { inventoryInfo: { sellableNumberOfItems: number } }) {
-    return row.inventoryInfo.sellableNumberOfItems < 10 ? 'bg-red-1 text-negative' : '';
+    return row.inventoryInfo.sellableNumberOfItems < LOW_STOCK_THRESHOLD ? 'bg-red-1 text-negative' : '';
 }
 </script>
 
