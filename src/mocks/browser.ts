@@ -1,6 +1,7 @@
 import { setupWorker } from 'msw/browser';
 import { analyticsHandlers } from './api/analytics';
 import { articlesHandlers } from './api/articles';
+import { dashboardHandlers } from './api/dashboard';
 import { auditLogHandlers } from './api/auditLog';
 import { inventoryAdjustmentsHandlers } from './api/inventoryAdjustments';
 import { movementsHandlers } from './api/movements';
@@ -26,5 +27,6 @@ export const worker = setupWorker(
     ...scanHandlers,
     ...warehousesHandlers,
     ...webhooksHandlers,
-    ...workflowsHandlers
+    ...workflowsHandlers,
+    ...dashboardHandlers
 );

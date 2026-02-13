@@ -1,58 +1,35 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useArticles } from 'src/composables/useArticleQuery';
-import { useOrders } from 'src/composables/useOrderQuery';
-import { useZones, useLocations, useArticleItemLocations, useWarehouses } from 'src/composables/useWarehouseQuery';
-import { useMovements } from 'src/composables/useMovementQuery';
-import { useReturnOrders, useReturnCauseSummary } from 'src/composables/useReturnOrderQuery';
+import { useDashboardSummary } from 'src/composables/useDashboardQuery';
 import KPICards from './components/KPICards.vue';
 import QuickActions from './components/QuickActions.vue';
 import LowStockAlerts from './components/LowStockAlerts.vue';
 import RecentOrders from './components/RecentOrders.vue';
 import { useQuasar } from 'quasar';
 import { api } from 'src/boot/axios';
-import { LOW_STOCK_THRESHOLD } from 'src/constants/inventory';
 import { notifyError } from 'src/utils/notify';
 
 const $q = useQuasar();
-const { articles, refresh: refreshArticles } = useArticles();
-const { orders, refresh: refreshOrders } = useOrders();
-const { refresh: refreshWarehouses } = useWarehouses();
-const { zones } = useZones();
-const { locations } = useLocations();
-const { articleItemLocations } = useArticleItemLocations();
-const { movements } = useMovements();
-const { returnOrders, refresh: refreshReturnOrders } = useReturnOrders();
-const { refresh: refreshCauseSummary } = useReturnCauseSummary();
-
-const today = new Date().toISOString().slice(0, 10);
+const { summary, refresh: refreshSummary } = useDashboardSummary();
 
 const kpiCards = computed(() => [
-    { label: '총 품목 수', value: articles.value.length, color: 'bg-primary' },
-    { label: '총 재고', value: articles.value.reduce((s, a) => s + a.inventoryInfo.numberOfItems, 0), color: 'bg-teal' },
-    { label: '판매 가능 수량', value: articles.value.reduce((s, a) => s + a.inventoryInfo.sellableNumberOfItems, 0), color: 'bg-positive' },
-    { label: '오늘 주문', value: orders.value.filter((o) => o.createdDate.slice(0, 10) === today).length, color: 'bg-orange' },
-    { label: '구역 수', value: zones.value.length, color: 'bg-deep-purple' },
-    { label: '로케이션(칸)', value: locations.value.length, color: 'bg-indigo' },
-    { label: '총 할당', value: articleItemLocations.value.reduce((s, ail) => s + ail.allocatedQuantity, 0), color: 'bg-cyan' },
-    { label: '오늘 이동', value: movements.value.filter((m) => m.movedDate.slice(0, 10) === today).length, color: 'bg-blue-grey' },
-    { label: '오늘 반품', value: returnOrders.value.filter((r) => r.createdDate.slice(0, 10) === today).length, color: 'bg-purple' },
+    { label: '총 품목 수', value: summary.value.totalArticles, color: 'bg-primary' },
+    { label: '총 재고', value: summary.value.totalStock, color: 'bg-teal' },
+    { label: '판매 가능 수량', value: summary.value.sellableStock, color: 'bg-positive' },
+    { label: '오늘 주문', value: summary.value.ordersToday, color: 'bg-orange' },
+    { label: '구역 수', value: summary.value.zoneCount, color: 'bg-deep-purple' },
+    { label: '로케이션(칸)', value: summary.value.locationCount, color: 'bg-indigo' },
+    { label: '총 할당', value: summary.value.totalAllocated, color: 'bg-cyan' },
+    { label: '오늘 이동', value: summary.value.movementsToday, color: 'bg-blue-grey' },
+    { label: '오늘 반품', value: summary.value.returnsToday, color: 'bg-purple' },
 ]);
 
-const lowStockArticles = computed(() =>
-    articles.value.filter((a) => a.inventoryInfo.sellableNumberOfItems < LOW_STOCK_THRESHOLD),
-);
+const lowStockArticles = computed(() => summary.value.lowStockArticles);
 
-const recentOrders = orders;
+const recentOrders = computed(() => summary.value.recentOrders);
 
 async function loadAll() {
-    await Promise.all([
-        refreshArticles(),
-        refreshOrders(),
-        refreshWarehouses(),
-        refreshReturnOrders(),
-        refreshCauseSummary(),
-    ]);
+    await refreshSummary();
 }
 
 function confirmReset() {
