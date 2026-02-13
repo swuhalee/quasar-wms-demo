@@ -8,7 +8,7 @@ const getPurchaseOrders = http.get(`${BASE}/purchaseOrders`, () => {
     return HttpResponse.json(db.purchaseOrders);
 });
 
-interface PutPurchaseOrderBody {
+interface PostPurchaseOrderBody {
     purchaseOrderNumber: string;
     goodsOwnerId?: number;
     purchaseOrderLines: {
@@ -20,8 +20,8 @@ interface PutPurchaseOrderBody {
     purchaseOrderRemark?: string;
 }
 
-const putPurchaseOrder = http.put(`${BASE}/purchaseOrders`, async ({ request }) => {
-    const body = (await request.json()) as PutPurchaseOrderBody;
+const postPurchaseOrder = http.post(`${BASE}/purchaseOrders`, async ({ request }) => {
+    const body = (await request.json()) as PostPurchaseOrderBody;
 
     for (const line of body.purchaseOrderLines) {
         if (!findArticle(line.articleNumber)) {
@@ -89,5 +89,5 @@ const putPurchaseOrder = http.put(`${BASE}/purchaseOrders`, async ({ request }) 
 
 export const purchaseOrdersHandlers = [
     getPurchaseOrders,
-    putPurchaseOrder
+    postPurchaseOrder
 ];

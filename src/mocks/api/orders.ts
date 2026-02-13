@@ -9,15 +9,15 @@ const getOrders = http.get(`${BASE}/orders`, () => {
     return HttpResponse.json(db.orders);
 });
 
-interface PutOrderBody {
+interface PostOrderBody {
     orderNumber: string;
     goodsOwnerId?: number;
     orderLines: { rowNumber: number; articleNumber: string; orderedNumberOfItems: number }[];
     orderRemark?: string;
 }
 
-const putOrder = http.put(`${BASE}/orders`, async ({ request }) => {
-    const body = (await request.json()) as PutOrderBody;
+const postOrder = http.post(`${BASE}/orders`, async ({ request }) => {
+    const body = (await request.json()) as PostOrderBody;
 
     for (const line of body.orderLines) {
         const article = findArticle(line.articleNumber);
@@ -240,7 +240,7 @@ const getOrderStatuses = http.get(`${BASE}/orders/statuses`, () => {
 
 export const ordersHandlers = [
     getOrders,
-    putOrder,
+    postOrder,
     processOrder,
     getPickingList,
     getOrderStatuses

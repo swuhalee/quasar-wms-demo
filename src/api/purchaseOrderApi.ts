@@ -16,5 +16,5 @@ export const purchaseOrderApi = {
         api.get<PurchaseOrder[]>('/api/v1/purchaseOrders').then((r) => r.data),
 
     createPurchaseOrder: (payload: CreatePurchaseOrderPayload) =>
-        api.put<PurchaseOrder>('/api/v1/purchaseOrders', payload).then((r) => r.data),
+        api.post<PurchaseOrder>('/api/v1/purchaseOrders', payload).then((r) => r.data),
 };
