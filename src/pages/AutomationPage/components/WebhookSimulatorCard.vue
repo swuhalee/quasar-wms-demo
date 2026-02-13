@@ -7,6 +7,7 @@ import { useSimulateWebhook } from 'src/composables/useWebhookQuery';
 import { OrderStatusId } from 'src/models/Order';
 import { ReturnCauseLabel } from 'src/models/ReturnOrder';
 import { WebhookEventType } from 'src/models/Webhook';
+import { notifyError } from 'src/utils/notify';
 import { computed, reactive, ref } from 'vue';
 
 const $q = useQuasar();
@@ -61,7 +62,7 @@ async function simulate() {
         await simulateWebhook({ eventType: eventType.value, payload: { ...payload } });
         $q.notify({ type: 'positive', message: '웹훅 이벤트가 시뮬레이션되었습니다.' });
     } catch (err: unknown) {
-        $q.notify({ type: 'negative', message: err instanceof Error ? err.message : '시뮬레이션에 실패했습니다.' });
+        notifyError(err, '시뮬레이션에 실패했습니다.');
     } finally {
         submitting.value = false;
     }

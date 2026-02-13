@@ -4,6 +4,7 @@ import { useInspectReturnOrder, useReturnOrders } from 'src/composables/useRetur
 import { ReturnCause, type ReturnOrder, ReturnStatusId } from 'src/models/ReturnOrder';
 import { computed } from 'vue';
 import ProcessReturnDialog from './ProcessReturnDialog.vue';
+import { notifyError } from 'src/utils/notify';
 
 const $q = useQuasar();
 const { returnOrders } = useReturnOrders();
@@ -41,7 +42,7 @@ async function doInspect(ro: ReturnOrder) {
         await inspectReturnOrder(ro.returnOrderId);
         $q.notify({ type: 'positive', message: `${ro.returnOrderNumber} 검수 완료로 진행되었습니다.` });
     } catch (err: unknown) {
-        $q.notify({ type: 'negative', message: err instanceof Error ? err.message : '실패했습니다.' });
+        notifyError(err, '검수 완료에 실패했습니다.');
     }
 }
 
@@ -81,7 +82,7 @@ function openProcessReturnDialog(ro: ReturnOrder) {
                             <q-item-label class="text-weight-bold">{{ ro.returnOrderNumber }}</q-item-label>
                             <q-item-label caption>원주문 {{ ro.originalOrderNumber }}</q-item-label>
                             <q-item-label caption>{{ ro.returnLines.length }}라인, {{ totalReturnQty(ro)
-                                }}건</q-item-label>
+                            }}건</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                             <q-btn dense flat color="primary" icon="search" label="검수" @click="doInspect(ro)" />
@@ -141,7 +142,8 @@ function openProcessReturnDialog(ro: ReturnOrder) {
                             <q-item-label caption>{{ ro.returnLines.length }}라인</q-item-label>
                         </q-item-section>
                         <q-item-section side>
-                            <q-badge :color="ro.returnStatus.statusId === 300 ? 'positive' : 'negative'"
+                            <q-badge
+                                :color="ro.returnStatus.statusId === ReturnStatusId.Restocked ? 'positive' : 'negative'"
                                 :label="ro.returnStatus.statusText" />
                         </q-item-section>
                     </q-item>

@@ -2,6 +2,7 @@
 import { useDialogPluginComponent, useQuasar } from 'quasar';
 import { useProcessReturnOrder } from 'src/composables/useReturnOrderQuery';
 import type { ReturnOrder } from 'src/models/ReturnOrder';
+import { notifyError } from 'src/utils/notify';
 
 interface Props {
     processTarget: ReturnOrder | null;
@@ -40,7 +41,7 @@ async function submitProcess() {
         $q.notify({ type: 'positive', message: '반품 처리되었습니다.' });
         onDialogOK();
     } catch (err: unknown) {
-        $q.notify({ type: 'negative', message: err instanceof Error ? err.message : '실패했습니다.' });
+        notifyError(err, '반품 처리에 실패했습니다.');
     }
 }
 </script>

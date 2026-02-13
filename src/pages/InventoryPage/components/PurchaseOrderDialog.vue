@@ -2,6 +2,7 @@
 import { useQuasar, useDialogPluginComponent } from 'quasar';
 import { useArticles } from 'src/composables/useArticleQuery';
 import { useCreatePurchaseOrder } from 'src/composables/usePurchaseOrderQuery';
+import { notifyError } from 'src/utils/notify';
 import { computed, reactive } from 'vue';
 
 defineEmits([...useDialogPluginComponent.emits]);
@@ -51,17 +52,9 @@ async function submitPurchaseOrder() {
 
         $q.notify({ type: 'positive', message: '입고 오더가 제출되었고 재고가 갱신되었습니다.' });
         onDialogOK({ purchaseOrderNumber: poForm.purchaseOrderNumber });
-        resetPoForm();
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : '입고 오더 제출에 실패했습니다.';
-        $q.notify({ type: 'negative', message });
+        notifyError(err, '입고 오더 제출에 실패했습니다.');
     }
-}
-
-function resetPoForm() {
-    poForm.purchaseOrderNumber = '';
-    poForm.purchaseOrderRemark = '';
-    poForm.lines = [{ articleNumber: '', orderedNumberOfItems: 1 }];
 }
 </script>
 

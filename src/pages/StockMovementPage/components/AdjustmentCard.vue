@@ -3,6 +3,7 @@ import { useQuasar } from 'quasar';
 import { useArticles } from 'src/composables/useArticleQuery';
 import { useCreateAdjustment } from 'src/composables/useMovementQuery';
 import { useLocations } from 'src/composables/useWarehouseQuery';
+import { notifyError } from 'src/utils/notify';
 import { computed, reactive, ref } from 'vue';
 
 const $q = useQuasar();
@@ -46,8 +47,7 @@ async function submit() {
         form.adjustedQuantity = 0;
         form.reason = '';
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : '조정에 실패했습니다.';
-        $q.notify({ type: 'negative', message });
+        notifyError(err, '조정에 실패했습니다.');
     } finally {
         submitting.value = false;
     }

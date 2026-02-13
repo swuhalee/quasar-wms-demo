@@ -2,6 +2,7 @@
 import { useDialogPluginComponent, useQuasar } from 'quasar';
 import { useArticles } from 'src/composables/useArticleQuery';
 import { useCreateOrder } from 'src/composables/useOrderQuery';
+import { notifyError } from 'src/utils/notify';
 import { computed, reactive } from 'vue';
 
 defineEmits([...useDialogPluginComponent.emits]);
@@ -11,10 +12,12 @@ const $q = useQuasar();
 const { articles } = useArticles();
 const { createOrder, isLoading: createLoading } = useCreateOrder();
 
+let lineId = 0;
+
 const orderForm = reactive({
     orderNumber: '',
     orderRemark: '',
-    lines: [{ articleNumber: '', orderedNumberOfItems: 1 }],
+    lines: [{ id: ++lineId, articleNumber: '', orderedNumberOfItems: 1 }],
 });
 
 const articleOptions = computed(() =>
@@ -25,8 +28,13 @@ const articleOptions = computed(() =>
 );
 
 function addOrderLine() {
-    orderForm.lines.push({ articleNumber: '', orderedNumberOfItems: 1 });
+    orderForm.lines.push({ id: ++lineId, articleNumber: '', orderedNumberOfItems: 1 });
 }
+
+function removeLine(id: number) {
+    orderForm.lines = orderForm.lines.filter(l => l.id !== id);
+}
+
 
 async function submitOrder() {
     if (!orderForm.orderNumber) {
@@ -52,20 +60,10 @@ async function submitOrder() {
 
         $q.notify({ type: 'positive', message: '주문이 생성되었고 재고가 할당되었습니다.' });
         onDialogOK();
-        resetOrderForm();
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : '주문 생성에 실패했습니다.';
-        $q.notify({ type: 'negative', message });
+        notifyError(err, '주문 생성에 실패했습니다.');
     }
 }
-
-
-function resetOrderForm() {
-    orderForm.orderNumber = '';
-    orderForm.orderRemark = '';
-    orderForm.lines = [{ articleNumber: '', orderedNumberOfItems: 1 }];
-}
-
 </script>
 
 <template>
@@ -81,7 +79,7 @@ function resetOrderForm() {
                 <q-input v-model="orderForm.orderRemark" label="비고" outlined dense />
 
                 <div class="text-subtitle2 q-mt-md">주문 라인</div>
-                <div v-for="(line, idx) in orderForm.lines" :key="idx" class="row items-center q-mb-sm">
+                <div v-for="line in orderForm.lines" :key="line.id" class="row items-center q-mb-sm">
                     <div class="col">
                         <q-select v-model="line.articleNumber" :options="articleOptions" label="품목" outlined dense
                             emit-value map-options class="q-mr-sm" />
@@ -92,7 +90,7 @@ function resetOrderForm() {
                     </div>
                     <div class="col-auto">
                         <q-btn flat round icon="delete" color="negative" size="sm"
-                            :disable="orderForm.lines.length <= 1" @click="orderForm.lines.splice(idx, 1)" />
+                            :disable="orderForm.lines.length <= 1" @click="removeLine(line.id)" />
                     </div>
                 </div>
                 <q-btn flat icon="add" padding="2px 6px" label="라인 추가" color="primary" @click="addOrderLine"

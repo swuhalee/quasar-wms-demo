@@ -5,6 +5,7 @@ import { useOrders } from 'src/composables/useOrderQuery';
 import { useCreateReturnOrder } from 'src/composables/useReturnOrderQuery';
 import { OrderStatusId } from 'src/models/Order';
 import { ReturnCause } from 'src/models/ReturnOrder';
+import { notifyError } from 'src/utils/notify';
 import { computed, reactive } from 'vue';
 
 defineEmits([...useDialogPluginComponent.emits]);
@@ -15,11 +16,13 @@ const { orders } = useOrders();
 const { articles } = useArticles();
 const { createReturnOrder, isLoading: createLoading } = useCreateReturnOrder();
 
+let lineId = 0;
+
 const returnForm = reactive({
     returnOrderNumber: '',
     originalOrderNumber: '',
     returnRemark: '',
-    lines: [{ articleNumber: '', qty: 1, cause: ReturnCause.Other as string }] as { articleNumber: string; qty: number; cause: string }[],
+    lines: [{ id: ++lineId, articleNumber: '', qty: 1, cause: ReturnCause.Other as string }] as { id: number, articleNumber: string; qty: number; cause: string }[],
 });
 
 const shippedOrderOptions = computed(() =>
@@ -40,7 +43,11 @@ const causeOptions = [
 ];
 
 function addCreateLine() {
-    returnForm.lines.push({ articleNumber: '', qty: 1, cause: ReturnCause.Other });
+    returnForm.lines.push({ id: ++lineId, articleNumber: '', qty: 1, cause: ReturnCause.Other });
+}
+
+function removeLine(id: number) {
+    returnForm.lines = returnForm.lines.filter(l => l.id !== id);
 }
 
 async function submitCreate() {
@@ -72,17 +79,9 @@ async function submitCreate() {
         });
         $q.notify({ type: 'positive', message: '반품 오더가 생성되었습니다.' });
         onDialogOK();
-        resetReturnForm();
     } catch (err: unknown) {
-        $q.notify({ type: 'negative', message: err instanceof Error ? err.message : '실패했습니다.' });
+        notifyError(err, '반품 오더 생성에 실패했습니다.');
     }
-}
-
-function resetReturnForm() {
-    returnForm.returnOrderNumber = '';
-    returnForm.originalOrderNumber = '';
-    returnForm.returnRemark = '';
-    returnForm.lines = [{ articleNumber: '', qty: 1, cause: ReturnCause.Other }];
 }
 </script>
 
@@ -100,8 +99,7 @@ function resetReturnForm() {
                 <q-input v-model="returnForm.returnRemark" label="비고" outlined dense />
 
                 <div class="text-subtitle2 q-mt-md">반품 라인</div>
-                <div v-for="(line, idx) in returnForm.lines" :key="idx"
-                    class="row q-col-gutter-sm items-center q-mb-sm">
+                <div v-for="line in returnForm.lines" :key="line.id" class="row q-col-gutter-sm items-center q-mb-sm">
                     <div class="col">
                         <q-select v-model="line.articleNumber" :options="articleOptions" label="품목" outlined dense
                             emit-value map-options class="q-mr-sm" />
@@ -115,8 +113,7 @@ function resetReturnForm() {
                             map-options class="q-mr-sm" />
                     </div>
                     <div class="col-auto">
-                        <q-btn flat round icon="delete" color="negative" size="sm"
-                            @click="returnForm.lines.splice(idx, 1)" />
+                        <q-btn flat round icon="delete" color="negative" size="sm" @click="removeLine(line.id)" />
                     </div>
                 </div>
                 <q-btn flat icon="add" padding="2px 6px" label="라인 추가" color="primary" @click="addCreateLine" />

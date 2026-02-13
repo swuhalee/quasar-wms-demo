@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useDialogPluginComponent, useQuasar } from 'quasar';
 import { useCreateWorkflow } from 'src/composables/useWorkflowQuery';
+import { notifyError } from 'src/utils/notify';
 import { computed, reactive } from 'vue';
 
 defineEmits([...useDialogPluginComponent.emits]);
@@ -19,17 +20,6 @@ const form = reactive({
         { fromStatusId: 100, toStatusId: 200, actionLabel: '', icon: 'arrow_forward' },
     ],
 });
-
-function resetForm() {
-    form.workflowName = '';
-    form.statuses = [
-        { statusId: 100, statusLabel: '', color: 'blue', isFinal: false },
-        { statusId: 200, statusLabel: '', color: 'positive', isFinal: true },
-    ];
-    form.transitions = [
-        { fromStatusId: 100, toStatusId: 200, actionLabel: '', icon: 'arrow_forward' },
-    ];
-}
 
 const colorOptions = [
     { label: '파랑', value: 'blue' },
@@ -74,9 +64,8 @@ async function saveWorkflow() {
         });
         $q.notify({ type: 'positive', message: '워크플로우가 생성되었습니다.' });
         onDialogOK();
-        resetForm();
     } catch (err: unknown) {
-        $q.notify({ type: 'negative', message: err instanceof Error ? err.message : '실패했습니다.' });
+        notifyError(err, '워크플로우 생성에 실패했습니다.');
     }
 }
 </script>
