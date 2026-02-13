@@ -3,6 +3,7 @@ import { useQuasar } from 'quasar';
 import { useArticles } from 'src/composables/useArticleQuery';
 import { useCreateMovement } from 'src/composables/useMovementQuery';
 import { useArticleItemLocations, useLocations } from 'src/composables/useWarehouseQuery';
+import { notifyError } from 'src/utils/notify';
 import { computed, reactive, ref } from 'vue';
 
 const $q = useQuasar();
@@ -28,15 +29,22 @@ const articleOptions = computed(() =>
     })),
 );
 
+const locationMap = computed(() => {
+    const map = new Map<number, string>();
+    for (const loc of locations.value) {
+        map.set(loc.locationId, loc.locationName);
+    }
+    return map;
+});
+
 const sourceLocationOptions = computed(() => {
     if (!form.articleNumber) return [];
     return articleItemLocations.value
         .filter((ail) => ail.articleNumber === form.articleNumber && ail.quantity - ail.allocatedQuantity > 0)
         .map((ail) => {
-            const loc = locations.value.find((l) => l.locationId === ail.locationId);
             const avail = ail.quantity - ail.allocatedQuantity;
             return {
-                label: `${loc?.locationName ?? `LOC-${ail.locationId}`} (가용: ${avail})`,
+                label: `${locationMap.value.get(ail.locationId) ?? `LOC-${ail.locationId}`} (가용: ${avail})`,
                 value: ail.locationId,
             };
         });
@@ -56,14 +64,6 @@ const maxMoveQty = computed(() => {
     return ail ? ail.quantity - ail.allocatedQuantity : 0;
 });
 
-function resetForm() {
-    form.articleNumber = '';
-    form.fromLocationId = null;
-    form.toLocationId = null;
-    form.quantity = 1;
-    moveStep.value = 1;
-}
-
 async function submit() {
     if (!form.fromLocationId || !form.toLocationId) return;
     submitting.value = true;
@@ -77,11 +77,18 @@ async function submit() {
         $q.notify({ type: 'positive', message: '재고가 이동되었습니다.' });
         resetForm();
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : '이동에 실패했습니다.';
-        $q.notify({ type: 'negative', message });
+        notifyError(err, '이동에 실패했습니다.');
     } finally {
         submitting.value = false;
     }
+}
+
+function resetForm() {
+    form.articleNumber = '';
+    form.fromLocationId = null;
+    form.toLocationId = null;
+    form.quantity = 1;
+    moveStep.value = 1;
 }
 </script>
 
@@ -103,8 +110,8 @@ async function submit() {
                 </q-step>
 
                 <q-step :name="2" title="출발 로케이션" icon="output" :done="moveStep > 2">
-                    <q-select v-model="form.fromLocationId" :options="sourceLocationOptions" label="출발 로케이션"
-                        outlined dense emit-value map-options />
+                    <q-select v-model="form.fromLocationId" :options="sourceLocationOptions" label="출발 로케이션" outlined
+                        dense emit-value map-options />
                     <q-stepper-navigation>
                         <q-btn color="primary" label="다음" :disable="!form.fromLocationId" @click="moveStep = 3" />
                         <q-btn flat color="primary" label="이전" class="q-ml-sm" @click="moveStep = 1" />
@@ -112,8 +119,8 @@ async function submit() {
                 </q-step>
 
                 <q-step :name="3" title="도착 로케이션 및 수량" icon="input" :done="moveStep > 3">
-                    <q-select v-model="form.toLocationId" :options="destLocationOptions" label="도착 로케이션" outlined
-                        dense emit-value map-options class="q-mb-sm" />
+                    <q-select v-model="form.toLocationId" :options="destLocationOptions" label="도착 로케이션" outlined dense
+                        emit-value map-options class="q-mb-sm" />
                     <q-input v-model.number="form.quantity" type="number" label="수량" outlined dense :min="1"
                         :max="maxMoveQty" :hint="`최대 가용: ${maxMoveQty}`" />
                     <q-stepper-navigation>

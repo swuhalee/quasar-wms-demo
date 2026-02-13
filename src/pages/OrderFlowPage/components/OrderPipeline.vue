@@ -3,10 +3,13 @@ import { type Order, OrderStatusId } from 'src/models/Order';
 import { useOrders, useProcessOrder } from 'src/composables/useOrderQuery';
 import { useQuasar } from 'quasar';
 import PickingListDialog from './PickingListDialog.vue';
+import { computed, ref } from 'vue';
+import { notifyError } from 'src/utils/notify';
 
 const $q = useQuasar();
 const { orders } = useOrders();
-const { processOrder, isLoading: processLoading } = useProcessOrder();
+const { processOrder } = useProcessOrder();
+const processingOrderId = ref<number | null>(null);
 
 const stages = [
     {
@@ -35,15 +38,24 @@ const stages = [
     },
 ];
 
-function ordersForStage(statusId: OrderStatusId) {
-    return orders.value.filter((o) => o.orderStatus.statusId === statusId);
-}
+const ordersByStage = computed(() => {
+    const map = new Map<OrderStatusId, Order[]>();
+    for (const stage of stages) {
+        map.set(stage.statusId, []);
+    }
+    for (const order of orders.value) {
+        const list = map.get(order.orderStatus.statusId);
+        if (list) list.push(order);
+    }
+    return map;
+});
 
 function totalQty(order: Order) {
     return order.orderLines.reduce((sum, l) => sum + l.orderedNumberOfItems, 0);
 }
 
 async function advanceOrder(orderId: number) {
+    processingOrderId.value = orderId;
     try {
         const updated = await processOrder(orderId);
         $q.notify({
@@ -51,8 +63,9 @@ async function advanceOrder(orderId: number) {
             message: `주문이 "${updated.orderStatus.statusText}"(으)로 진행되었습니다.`,
         });
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : '주문 진행에 실패했습니다.';
-        $q.notify({ type: 'negative', message });
+        notifyError(err, '주문 진행에 실패했습니다.');
+    } finally {
+        processingOrderId.value = null;
     }
 }
 
@@ -70,13 +83,13 @@ function openPickingListDialog(orderId: number) {
             <q-card flat bordered>
                 <q-card-section :class="`bg-${stage.color} text-white`">
                     <div class="text-subtitle1">{{ stage.label }}</div>
-                    <div class="text-h5">{{ ordersForStage(stage.statusId).length }}</div>
+                    <div class="text-h5">{{ ordersByStage.get(stage.statusId)?.length ?? 0 }}</div>
                 </q-card-section>
 
                 <q-separator />
 
                 <q-list separator>
-                    <q-item v-for="order in ordersForStage(stage.statusId)" :key="order.orderId">
+                    <q-item v-for="order in ordersByStage.get(stage.statusId)" :key="order.orderId">
                         <q-item-section>
                             <q-item-label>{{ order.orderNumber }}</q-item-label>
                             <q-item-label caption>
@@ -94,7 +107,7 @@ function openPickingListDialog(orderId: number) {
                                 </q-btn>
 
                                 <q-btn v-if="stage.nextAction" dense flat :icon="stage.nextIcon"
-                                    :color="stage.nextColor" :loading="processLoading"
+                                    :color="stage.nextColor" :loading="processingOrderId === order.orderId"
                                     @click="advanceOrder(order.orderId)">
                                     <q-tooltip>{{ stage.nextAction }}</q-tooltip>
                                 </q-btn>
@@ -102,7 +115,7 @@ function openPickingListDialog(orderId: number) {
                         </q-item-section>
                     </q-item>
 
-                    <q-item v-if="ordersForStage(stage.statusId).length === 0">
+                    <q-item v-if="ordersByStage.get(stage.statusId)?.length === 0">
                         <q-item-section class="text-grey text-center">주문 없음</q-item-section>
                     </q-item>
                 </q-list>

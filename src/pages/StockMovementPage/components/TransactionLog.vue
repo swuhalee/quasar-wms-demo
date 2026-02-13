@@ -2,7 +2,7 @@
 import { type QTableColumn } from 'quasar';
 import { useAdjustments, useMovements } from 'src/composables/useMovementQuery';
 import { useLocations } from 'src/composables/useWarehouseQuery';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const { movements } = useMovements();
 const { adjustments } = useAdjustments();
@@ -10,8 +10,16 @@ const { locations } = useLocations();
 
 const logTab = ref('movements');
 
+const locationMap = computed(() => {
+    const map = new Map<number, string>();
+    for (const loc of locations.value) {
+        map.set(loc.locationId, loc.locationName);
+    }
+    return map;
+});
+
 function locationName(id: number): string {
-    return locations.value.find((l) => l.locationId === id)?.locationName ?? `LOC-${id}`;
+    return locationMap.value.get(id) ?? `LOC-${id}`;
 }
 
 const movementColumns: QTableColumn[] = [

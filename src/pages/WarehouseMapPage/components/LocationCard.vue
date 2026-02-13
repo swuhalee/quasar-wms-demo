@@ -3,6 +3,7 @@ import { useQuasar } from 'quasar';
 import { useArticleItemLocations } from 'src/composables/useWarehouseQuery';
 import LocationDetailPanel from './LocationDetailPanel.vue';
 import type { Location } from 'src/models/Warehouse';
+import { computed } from 'vue';
 
 interface Props {
     location: Location;
@@ -14,16 +15,17 @@ const { articleItemLocations } = useArticleItemLocations();
 
 const $q = useQuasar();
 function openLocationDetailPanel() {
-    console.log(props.location);
     $q.dialog({
         component: LocationDetailPanel,
         componentProps: { location: props.location },
     });
 }
 
-function itemsAtLocation() {
-    return articleItemLocations.value.filter((ail) => ail.locationId === props.location.locationId);
-}
+const itemsAtLocation = computed(() =>
+    articleItemLocations.value.filter(
+        (ail) => ail.locationId === props.location.locationId
+    )
+);
 </script>
 
 <template>
@@ -31,11 +33,11 @@ function itemsAtLocation() {
         <q-card-section class="q-pa-sm text-center">
             <div class="text-subtitle2 text-weight-bold">{{ location.locationName }}</div>
             <q-separator class="q-my-xs" />
-            <div v-if="itemsAtLocation().length === 0" class="text-grey text-caption">
+            <div v-if="itemsAtLocation.length === 0" class="text-grey text-caption">
                 비어 있음
             </div>
             <div v-else>
-                <div v-for="item in itemsAtLocation()" :key="item.articleNumber" class="text-caption q-my-xs">
+                <div v-for="item in itemsAtLocation" :key="item.articleNumber" class="text-caption q-my-xs">
                     <div class="text-left text-weight-bold">{{ item.articleNumber }}</div>
                     <div class="row justify-between no-wrap">
                         <span>수량: {{ item.quantity }}</span>
