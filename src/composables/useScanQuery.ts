@@ -3,6 +3,7 @@ import { scanApi } from 'src/api/scanApi';
 import type { RecentScan } from 'src/models/Scan';
 import { ref, watch } from 'vue';
 
+/** 최근 스캔 이력: 모든 컴포넌트에서 공유 가능 */
 const recentScans = ref<RecentScan[]>([]);
 
 export const SCAN_KEYS = {

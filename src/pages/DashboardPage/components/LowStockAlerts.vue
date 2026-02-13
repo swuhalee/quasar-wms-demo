@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { Article } from "src/models/Article";
 
-defineProps<{ artices: Article[] }>();
+defineProps<{ articles: Article[] }>();
 </script>
 
 <template>
     <div class="q-mt-lg">
         <div class="text-h5 q-mb-sm">재고 부족 알림</div>
 
-        <q-card v-if="artices.length === 0" flat bordered>
+        <q-card v-if="articles.length === 0" flat bordered>
             <q-card-section class="text-positive">
                 <q-icon name="check_circle" size="sm" class="q-mr-sm" />
                 모든 품목 재고가 충분합니다.
@@ -16,9 +16,9 @@ defineProps<{ artices: Article[] }>();
         </q-card>
 
         <q-list v-else bordered separator class="rounded-borders">
-            <q-item v-for="article in artices" :key="article.articleSystemId">
+            <q-item v-for="article in articles" :key="article.articleSystemId">
                 <q-item-section avatar>
-                    <q-icon name="warning" color="nagetive" />
+                    <q-icon name="warning" color="negative" />
                 </q-item-section>
 
                 <q-item-section>
